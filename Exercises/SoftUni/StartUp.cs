@@ -2,6 +2,7 @@
 using SoftUni.Data;
 using SoftUni.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -11,7 +12,6 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-			
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -42,5 +42,19 @@ namespace SoftUni
 			return stringBuilder.ToString();
 		}
 
+		public static string GetEmployeesFromResearchAndDevelopment(SoftUniContext context)
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+			IQueryable<Employee> employeesFromReseacrhAndDevelopment = context.Employees.Where(x => x.Department.Name == "Research and Development");
+
+			IOrderedQueryable<Employee> orderedEmployees = employeesFromReseacrhAndDevelopment.OrderBy(x => x.Salary).ThenByDescending(x => x.FirstName);
+
+			foreach (Employee emp in orderedEmployees)
+			{
+				stringBuilder.AppendLine($"{emp.FirstName} {emp.LastName} from Research and Development - ${emp.Salary:f2}");
+			}
+
+			return stringBuilder.ToString();
+		}
 	}
 }
