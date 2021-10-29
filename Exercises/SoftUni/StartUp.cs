@@ -11,7 +11,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-
+			
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -24,6 +24,19 @@ namespace SoftUni
 			foreach (Employee emp in orderedEmployees)
 			{
 				stringBuilder.AppendLine($"{emp.FirstName} {emp.MiddleName} {emp.LastName} {emp.JobTitle} {emp.Salary:f2}");
+			}
+
+			return stringBuilder.ToString();
+		}
+
+		public static string GetEmployeesWithSalaryOver50000(SoftUniContext context)
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+			IOrderedQueryable<Employee> employeesOver50000 = context.Employees.Where(x => x.Salary > 50000).OrderBy(x => x.FirstName);
+
+			foreach(Employee emp in employeesOver50000)
+			{
+				stringBuilder.AppendLine($"{emp.FirstName} - {emp.Salary:f2}");
 			}
 
 			return stringBuilder.ToString();
