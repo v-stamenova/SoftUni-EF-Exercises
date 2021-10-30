@@ -12,7 +12,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine(GetEmployeesFromResearchAndDevelopment(new SoftUniContext()));
+			Console.WriteLine(GetEmployeesInPeriod(new SoftUniContext()));
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -87,6 +87,50 @@ namespace SoftUni
 				.Select(e => e.Address.AddressText).Take(10).ToArray();
 
 			return string.Join(Environment.NewLine, allEmployees);
+		}
+
+		public static string GetEmployeesInPeriod(SoftUniContext context)
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+
+			var employees = context.Employees
+				.Where(e => e.EmployeesProjects
+					.Any(x => x.Project.StartDate.Year >= 2001 && x.Project.StartDate.Year <= 2003))
+				.Select(e => new
+				{
+					FirstName = e.FirstName,
+					LastName = e.LastName,
+
+					ManagerFirstName = e.Manager.FirstName,
+					ManagerLastName = e.Manager.LastName,
+
+					Projects = e.EmployeesProjects.Select(p => new
+					{
+						Name = p.Project.Name,
+						StartDate = p.Project.StartDate,
+						EndDate = p.Project.EndDate,
+					})
+				})
+				.Take(10);
+
+			foreach(var emp in employees)
+			{
+				stringBuilder.AppendLine($"{emp.FirstName} {emp.LastName} - Manager: {emp.ManagerFirstName} {emp.ManagerLastName}");
+				
+				foreach(var proj in emp.Projects)
+				{
+					if(proj.EndDate is null)
+					{
+						stringBuilder.AppendLine($"--{proj.Name} - {proj.StartDate.ToString("M/d/yyyy h:mm:ss tt")} - not finished");
+					}
+					else
+					{
+						stringBuilder.AppendLine($"--{proj.Name} - {proj.StartDate.ToString("M/d/yyyy h:mm:ss tt")} - {proj.EndDate.Value.ToString("M/d/yyyy h:mm:ss tt")}");
+					}
+				}
+			}
+
+			return stringBuilder.ToString();
 		}
 	}
 }
