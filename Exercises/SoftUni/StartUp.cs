@@ -12,7 +12,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine(GetEmployeesByFirstNameStartingWithSa(new SoftUniContext()));
+			Console.WriteLine(DeleteProjectById(new SoftUniContext()));
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -291,6 +291,23 @@ namespace SoftUni
 			}
 
 			return builder.ToString();
+		}
+
+		public static string DeleteProjectById(SoftUniContext context)
+		{
+			Project toBeRemoved = context.Projects.Single(x => x.ProjectId == 2);
+
+			context.EmployeesProjects.RemoveRange(context.EmployeesProjects.Where(ep => ep.ProjectId == 2));
+			context.Projects.Remove(toBeRemoved);
+
+			context.SaveChanges();
+
+			var projectNames = context.Projects
+				.Select(x => x.Name)
+				.Take(10)
+				.ToList();
+
+			return string.Join(Environment.NewLine, projectNames);
 		}
 	}
 }
