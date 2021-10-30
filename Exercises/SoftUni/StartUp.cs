@@ -12,7 +12,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine(IncreaseSalaries(new SoftUniContext()));
+			Console.WriteLine(GetEmployeesByFirstNameStartingWithSa(new SoftUniContext()));
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -263,6 +263,31 @@ namespace SoftUni
 			foreach(var emp in employees)
 			{
 				builder.AppendLine($"{emp.FirstName} {emp.LastName} (${emp.Salary:f2})");
+			}
+
+			return builder.ToString();
+		}
+
+		public static string GetEmployeesByFirstNameStartingWithSa(SoftUniContext context)
+		{
+			var employees = context.Employees
+				.Where(x => x.FirstName.ToLower().StartsWith("sa"))
+				.Select(x => new
+				{
+					FirstName = x.FirstName,
+					LastName = x.LastName,
+					JobTitle = x.JobTitle,
+					Salary = x.Salary
+				})
+				.OrderBy(x => x.FirstName)
+				.ThenBy(x => x.LastName)
+				.ToList();
+
+			StringBuilder builder = new StringBuilder();
+
+			foreach(var emp in employees)
+			{
+				builder.AppendLine($"{emp.FirstName} {emp.LastName} - {emp.JobTitle} - (${emp.Salary:f2})");
 			}
 
 			return builder.ToString();
