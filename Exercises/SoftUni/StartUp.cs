@@ -12,7 +12,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine(AddNewAddressToEmployee(new SoftUniContext()));
+			Console.WriteLine(GetEmployeesFromResearchAndDevelopment(new SoftUniContext()));
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -48,11 +48,21 @@ namespace SoftUni
 			StringBuilder stringBuilder = new StringBuilder();
 			IQueryable<Employee> employeesFromReseacrhAndDevelopment = context.Employees.Where(x => x.Department.Name == "Research and Development");
 
-			IOrderedQueryable<Employee> orderedEmployees = employeesFromReseacrhAndDevelopment.OrderBy(x => x.Salary).ThenByDescending(x => x.FirstName);
+			var orderedEmployees = employeesFromReseacrhAndDevelopment
+				.OrderBy(x => x.Salary)
+				.ThenByDescending(x => x.FirstName)
+				.Select(x => new
+				{
+					x.FirstName,
+					x.LastName,
+					DepartmentName = x.Department.Name,
+					x.Salary
+				})
+				.ToList();
 
-			foreach (Employee emp in orderedEmployees)
+			foreach(var emp in orderedEmployees)
 			{
-				stringBuilder.AppendLine($"{emp.FirstName} {emp.LastName} from Research and Development - ${emp.Salary:f2}");
+				stringBuilder.AppendLine($"{emp.FirstName} {emp.LastName} from {emp.DepartmentName} - ${emp.Salary:f2}");
 			}
 
 			return stringBuilder.ToString();
