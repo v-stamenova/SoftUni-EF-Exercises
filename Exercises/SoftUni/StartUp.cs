@@ -12,6 +12,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
+			Console.WriteLine(AddNewAddressToEmployee(new SoftUniContext()));
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -55,6 +56,27 @@ namespace SoftUni
 			}
 
 			return stringBuilder.ToString();
+		}
+
+		public static string AddNewAddressToEmployee(SoftUniContext context)
+		{
+			var address = new Address()
+			{
+				AddressText = "Vitoshka 15",
+				TownId = 4
+			};
+			context.Addresses.Add(address);
+
+			Employee nakovEmployee = context.Employees.First(e => e.LastName == "Nakov");
+			nakovEmployee.Address = address;
+
+			context.SaveChanges();
+
+			var allEmployees = context.Employees
+				.OrderByDescending(e => e.AddressId)
+				.Select(e => e.Address.AddressText).Take(10).ToArray();
+
+			return string.Join(Environment.NewLine, allEmployees);
 		}
 	}
 }
