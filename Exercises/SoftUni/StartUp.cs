@@ -12,7 +12,7 @@ namespace SoftUni
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine(GetLatestProjects(new SoftUniContext()));
+			Console.WriteLine(IncreaseSalaries(new SoftUniContext()));
 		}
 
 		public static string GetEmployeesFullInformation(SoftUniContext context)
@@ -239,6 +239,30 @@ namespace SoftUni
 				builder.AppendLine(project.Name);
 				builder.AppendLine(project.Description);
 				builder.AppendLine(project.StartDate.ToString("M/d/yyyy h:mm:ss tt"));
+			}
+
+			return builder.ToString();
+		}
+
+		public static string IncreaseSalaries(SoftUniContext context)
+		{
+			var employees = context.Employees
+				.Where(x => x.Department.Name == "Engineering" || x.Department.Name == "Tool Design" || x.Department.Name == "Marketing" || x.Department.Name == "Information Services")
+				.Select(x => new
+				{
+					FirstName = x.FirstName,
+					LastName = x.LastName,
+					Salary = x.Salary + (x.Salary * 0.12M)
+				})
+				.OrderBy(x => x.FirstName)
+				.ThenBy(x => x.LastName)
+				.ToList();
+
+			StringBuilder builder = new StringBuilder();
+			
+			foreach(var emp in employees)
+			{
+				builder.AppendLine($"{emp.FirstName} {emp.LastName} (${emp.Salary:f2})");
 			}
 
 			return builder.ToString();
