@@ -13,10 +13,15 @@ namespace MusicHub.Data.Models
 		}
 
 		public int Id { get; set; }
+
 		public string Name { get; set; }
+
 		public TimeSpan Duration { get; set; }
+
 		public DateTime CreatedOn { get; set; }
+
 		public Genre Genre { get; set; }
+
 		public decimal Price { get; set; }
 		
 		public int? AlbumId { get; set; }
