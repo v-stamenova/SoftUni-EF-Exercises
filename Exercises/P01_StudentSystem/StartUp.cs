@@ -6,7 +6,6 @@ namespace P01_StudentSystem
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
 		}
 	}
 }
