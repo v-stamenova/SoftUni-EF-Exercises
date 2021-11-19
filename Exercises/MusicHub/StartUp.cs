@@ -64,5 +64,68 @@
 
 			return builder.ToString();
 		}
+
+
+		public static string ExportSongsAboveDuration(MusicHubDbContext context, int duration)
+		{
+			StringBuilder builder = new StringBuilder();
+
+			var songs = context.Songs
+					.Select(s => new
+					{
+						s.Name,
+						WriterName = s.Writer.Name,
+						ProducerName = s.Album.Producer.Name,
+						s.Duration,
+						Performers = s.SongPerformers
+							.Select(p => new
+							{
+								p.Performer.FirstName,
+								p.Performer.LastName
+							})
+							.ToList()
+					})
+					.ToList()
+					.OrderBy(x => x.Name)
+					.ThenBy(x => x.WriterName)
+					.ThenBy(x => x.Performers.FirstOrDefault() is null ? null : x.Performers.First().FirstName)
+					.Where(x => IsItLonger(duration, x.Duration.TotalMinutes));
+
+			int count = 1;
+			foreach (var song in songs)
+			{
+				var Performer = song.Performers.FirstOrDefault();
+
+				builder.AppendLine($"-Song #{count}");
+				builder.AppendLine($"---SongName: {song.Name}");
+				builder.AppendLine($"---Writer: {song.WriterName}");
+				if (!(Performer is null))
+				{
+					builder.AppendLine($"---Performer: {Performer.FirstName} {Performer.LastName}");
+				}
+				else
+				{
+					builder.AppendLine($"---Performer: ");
+				}
+
+				builder.AppendLine($"---AlbumProducer: {song.ProducerName}");
+				builder.AppendLine($"---Duration: {song.Duration.ToString("c")}");
+				count++;
+			}
+
+			return builder.ToString();
+		}
+
+		private static bool IsItLonger(int duration, double songDuration)
+		{
+			if (duration < songDuration)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 }
