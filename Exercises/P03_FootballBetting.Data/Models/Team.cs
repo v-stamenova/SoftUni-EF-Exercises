@@ -12,9 +12,13 @@ namespace P03_FootballBetting.Data.Models
 		}
 
 		public int TeamId { get; set; }
+
 		public decimal Budget { get; set; }
+
 		public string Initials { get; set; }
+
 		public string LogoUrl { get; set; }
+
 		public string Name { get; set; }
 
 		public int PrimaryKitColorId { get; set; }
