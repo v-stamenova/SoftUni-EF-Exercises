@@ -147,5 +147,14 @@
 
 			return string.Join(Environment.NewLine, books.Select(b => $"{b.Title} ({b.FirstName} {b.LastName})"));
 		}
+
+		public static int CountBooks(BookShopContext context, int lengthCheck)
+		{
+			int count = context.Books
+				.Where(b => b.Title.Length > lengthCheck)
+				.Count();
+
+			return count;
+		}
 	}
 }
