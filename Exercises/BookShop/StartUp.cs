@@ -226,5 +226,16 @@
 				.ToList()
 				.ForEach(b => b.Price += 5);
 		}
+
+		public static int RemoveBooks(BookShopContext context)
+		{
+			var booksToBeDeleted = context.Books
+				.Where(x => x.Copies < 4200)
+				.ToList();
+
+			context.RemoveRange(booksToBeDeleted);
+
+			return booksToBeDeleted.Count;
+		}
 	}
 }
