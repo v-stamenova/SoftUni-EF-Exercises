@@ -218,5 +218,13 @@
 
 			return builder.ToString();
 		}
+
+		public static void IncreasePrices(BookShopContext context)
+		{
+			context.Books
+				.Where(x => x.ReleaseDate.Value.Year < 2010)
+				.ToList()
+				.ForEach(b => b.Price += 5);
+		}
 	}
 }
