@@ -90,5 +90,18 @@
 
 			return string.Join(Environment.NewLine, booksTitles);
 		}
+
+		public static string GetBooksReleasedBefore(BookShopContext context, string date)
+		{
+			DateTime releaseDate = DateTime.ParseExact(date, "dd-MM-yyyy", null);
+
+			var books = context.Books
+				.Where(b => b.ReleaseDate < releaseDate)
+				.OrderByDescending(b => b.ReleaseDate)
+				.Select(b => new { b.Title, b.EditionType, b.Price })
+				.ToList();
+
+			return string.Join(Environment.NewLine, books.Select(b => $"{b.Title} - {b.EditionType} - ${b.Price:f2}"));
+		}
 	}
 }
