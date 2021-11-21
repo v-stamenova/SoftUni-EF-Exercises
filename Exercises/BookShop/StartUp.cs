@@ -3,6 +3,7 @@
     using Data;
     using Initializer;
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 
 	public class StartUp
@@ -74,6 +75,20 @@
 					.OrderBy(b => b.BookId);
 
 			return string.Join(Environment.NewLine, booksNotReleased.Select(x => x.Title));
+		}
+
+		public static string GetBooksByCategory(BookShopContext context, string input)
+		{
+			List<string> categories = input.ToLower().Split(' ').ToList();
+
+			var booksTitles = context.Books
+				.Where(b => b.BookCategories
+					.Any(bc => categories.Contains(bc.Category.Name.ToLower())))
+				.OrderBy(b => b.Title)
+				.Select(b => b.Title)
+				.ToList();
+
+			return string.Join(Environment.NewLine, booksTitles);
 		}
 	}
 }
