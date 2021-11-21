@@ -44,6 +44,7 @@
 
 			return string.Join(Environment.NewLine, goldenEdition.Select(x => x.Title).ToList());
 		}
+
 		public static string GetBooksByPrice(BookShopContext context)
 		{
 			var books = context.Books
@@ -59,5 +60,20 @@
 			return string.Join(Environment.NewLine, books.Select(x => $"{x.Title} - ${x.Price}"));
 		}
 
+		public static string GetBooksNotReleasedIn(BookShopContext context, int year)
+		{
+			var booksNotReleased = context.Books
+					.Select(b => new
+					{
+						b.Title,
+						b.BookId,
+						b.ReleaseDate
+					})
+					.ToList()
+					.Where(b => b.ReleaseDate.Value.Year != year)
+					.OrderBy(b => b.BookId);
+
+			return string.Join(Environment.NewLine, booksNotReleased.Select(x => x.Title));
+		}
 	}
 }
