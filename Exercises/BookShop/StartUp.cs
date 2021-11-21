@@ -27,5 +27,22 @@
 
 			return string.Join(Environment.NewLine, booksWithRestriction.Select(x => x.Title).ToList());
 		}
+
+		public static string GetGoldenBooks(BookShopContext context)
+		{
+			var goldenEdition = context.Books
+					.Select(b => new
+					{
+						b.Title,
+						b.BookId,
+						b.EditionType,
+						b.Copies
+					})
+					.OrderBy(b => b.BookId)
+					.ToList()
+					.Where(b => b.Copies < 5000 && b.EditionType.ToString() == "Gold");
+
+			return string.Join(Environment.NewLine, goldenEdition.Select(x => x.Title).ToList());
+		}
 	}
 }
