@@ -171,5 +171,20 @@
 
 			return string.Join(Environment.NewLine, authors.Select(x => $"{x.FirstName} {x.LastName} - {x.BooksCount}"));
 		}
+
+		public static string GetTotalProfitByCategory(BookShopContext context)
+		{
+			var catProfit = context.Categories
+				.Select(c => new
+				{
+					c.Name,
+					Profit = c.CategoryBooks.Sum(b => b.Book.Price * b.Book.Copies)
+				})
+				.OrderByDescending(c => c.Profit)
+				.ThenBy(c => c.Name)
+				.ToList();
+
+			return string.Join(Environment.NewLine, catProfit.Select(x => $"{x.Name} ${x.Profit.ToString("0.00")}"));
+		}
 	}
 }
