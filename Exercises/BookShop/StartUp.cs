@@ -131,5 +131,21 @@
 			return string.Join(Environment.NewLine, books);
 		}
 
+		public static string GetBooksByAuthor(BookShopContext context, string input)
+		{
+			var books = context.Books
+				.Where(b => b.Author.LastName.ToLower().StartsWith(input.ToLower()))
+				.Select(b => new
+				{
+					b.Title,
+					b.Author.FirstName,
+					b.Author.LastName,
+					b.BookId
+				})
+				.OrderBy(b => b.BookId)
+				.ToList();
+
+			return string.Join(Environment.NewLine, books.Select(b => $"{b.Title} ({b.FirstName} {b.LastName})"));
+		}
 	}
 }
