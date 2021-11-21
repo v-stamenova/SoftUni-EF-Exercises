@@ -119,5 +119,17 @@
 
 			return string.Join(Environment.NewLine, authorsNames.Select(a => $"{a.FirstName} {a.LastName}"));
 		}
+
+		public static string GetBookTitlesContaining(BookShopContext context, string input)
+		{
+			var books = context.Books
+					.Where(b => b.Title.ToLower().Contains(input.ToLower()))
+					.Select(b => b.Title)
+					.OrderBy(b => b)
+					.ToList();
+
+			return string.Join(Environment.NewLine, books);
+		}
+
 	}
 }
