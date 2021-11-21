@@ -156,5 +156,20 @@
 
 			return count;
 		}
+
+		public static string CountCopiesByAuthor(BookShopContext context)
+		{
+			var authors = context.Authors
+				.Select(a => new
+				{
+					a.FirstName,
+					a.LastName,
+					BooksCount = a.Books.Sum(x => x.Copies)
+				})
+				.OrderByDescending(x => x.BooksCount)
+				.ToList();
+
+			return string.Join(Environment.NewLine, authors.Select(x => $"{x.FirstName} {x.LastName} - {x.BooksCount}"));
+		}
 	}
 }
