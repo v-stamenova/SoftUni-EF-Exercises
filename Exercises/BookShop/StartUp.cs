@@ -5,6 +5,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Text;
 
 	public class StartUp
     {
@@ -185,6 +186,37 @@
 				.ToList();
 
 			return string.Join(Environment.NewLine, catProfit.Select(x => $"{x.Name} ${x.Profit.ToString("0.00")}"));
+		}
+
+		public static string GetMostRecentBooks(BookShopContext context)
+		{
+			var catBooks = context.Categories
+				.Select(c => new
+				{
+					c.Name,
+					RecentBooks = c.CategoryBooks.Select(b => new
+					{
+						b.Book.Title,
+						b.Book.ReleaseDate
+					})
+					.OrderByDescending(x => x.ReleaseDate).Take(3)
+				})
+				.OrderBy(c => c.Name)
+				.ToList();
+
+			StringBuilder builder = new StringBuilder();
+
+			foreach (var cat in catBooks)
+			{
+				builder.AppendLine($"--{cat.Name}");
+
+				foreach (var book in cat.RecentBooks)
+				{
+					builder.AppendLine($"{book.Title} ({book.ReleaseDate.Value.Year})");
+				}
+			}
+
+			return builder.ToString();
 		}
 	}
 }
